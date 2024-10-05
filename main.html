@@ -14,10 +14,15 @@
             position: absolute;
             top: 10px;
             left: 10px;
-            background: white;
-            padding: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
             border-radius: 5px;
             z-index: 1000; /* Ensures it stays on top */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        h4 {
+            margin: 0 0 10px;
+            font-size: 16px;
         }
     </style>
 </head>
@@ -26,8 +31,16 @@
         <h4>Control Panel</h4>
         <label>
             <input type="checkbox" id="land-monitoring" checked>
-            Land Monitoring (NASA GIBS)
+            Show Land Monitoring Layer
         </label>
+        <br><br>
+        <label for="layer-select">Select Layer:</label>
+        <select id="layer-select">
+            <option value="MODIS_Terra_Corrected_Reflectance_True_Color" selected>True Color (MODIS)</option>
+            <option value="MODIS_Terra_Surface_Temperature_Day">Surface Temperature (Day)</option>
+            <option value="MODIS_Terra_Surface_Temperature_Night">Surface Temperature (Night)</option>
+            <option value="MODIS_Terra_Vegetation_Indices">Vegetation Indices</option>
+        </select>
     </div>
     <div id="map"></div>
     
@@ -46,9 +59,15 @@
         let gibsLayer;
 
         // Function to add NASA GIBS layer
-        function addGibsLayer() {
+        function addGibsLayer(layer) {
+            // Remove existing layer if it exists
+            if (gibsLayer) {
+                map.removeLayer(gibsLayer);
+            }
+
+            // Create new GIBS layer based on the selected layer
             gibsLayer = L.tileLayer('https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?', {
-                layers: 'MODIS_Terra_Corrected_Reflectance_True_Color',
+                layers: layer,
                 format: 'image/png',
                 transparent: true,
                 attribution: '&copy; <a href="https://earthdata.nasa.gov/">NASA Earth Data</a>',
@@ -59,16 +78,25 @@
             gibsLayer.addTo(map);
         }
 
-        // Call the function to add GIBS layer
-        addGibsLayer();
+        // Initial layer load
+        addGibsLayer('MODIS_Terra_Corrected_Reflectance_True_Color');
 
         // Control panel toggle for land monitoring
         const landMonitoringCheckbox = document.getElementById('land-monitoring');
         landMonitoringCheckbox.addEventListener('change', () => {
             if (landMonitoringCheckbox.checked) {
-                map.addLayer(gibsLayer); // Add the GIBS layer
+                const selectedLayer = document.getElementById('layer-select').value;
+                addGibsLayer(selectedLayer); // Add the GIBS layer
             } else {
                 map.removeLayer(gibsLayer); // Remove the GIBS layer
+            }
+        });
+
+        // Layer selection event listener
+        const layerSelect = document.getElementById('layer-select');
+        layerSelect.addEventListener('change', () => {
+            if (landMonitoringCheckbox.checked) {
+                addGibsLayer(layerSelect.value); // Update layer based on selection
             }
         });
     </script>
