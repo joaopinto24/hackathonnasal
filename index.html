@@ -3,116 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aqua Finder</title>
+    <title>Aquafindr - Water Alerts for Farmers</title>
+    <!-- Rubik Font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f0f0f0;
-            color: #333;
-            line-height: 1.6;
-        }
-
-        header {
-            background-color: #007BFF;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            position: relative;
-        }
-
-        .logo {
-            font-size: 2em;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        nav {
-            margin: 20px 0;
-        }
-
-        nav ul {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            padding: 10px 15px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-
-        nav ul li a:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-
-        main {
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
+        body, html {
+            height: 100%;
+            font-family: 'Rubik', sans-serif;
+            overflow-y: scroll;
         }
 
         section {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-
-        h1, h2 {
-            margin-bottom: 15px;
-        }
-
-        footer {
-            background-color: #007BFF;
-            color: white;
-            text-align: center;
-            padding: 15px;
-            position: relative;
-            bottom: 0;
+            height: 100vh;
             width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        footer a {
-            color: #FFD700;
+        .hero {
+            background-color: #1e1e1e;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            color: rgb(59, 130, 246); /* Accent color */
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            color: #ff4081;
+        }
+
+        .hero a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 15px 30px;
+            background-color: rgb(59, 130, 246); /* Accent color */
+            color: white;
             text-decoration: none;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .truth {
+            background-color: #121212;
+            color: #f44336;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .truth h2 {
+            font-size: 3rem;
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="logo">Aqua Finder</div>
-        <nav>
-            <ul>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#functionality">Functionality</a></li>
-            </ul>
-        </nav>
-        <p>Optimize irrigation with real-time data and advanced analytics.</p>
-    </header>
-    <main>
-        <section id="features">
-            <h2>Features</h2>
-            <p>Combine EO data with local weather forecasts to recommend optimal irrigation schedules based on soil moisture levels and evapotranspiration rates.</p>
-        </section>
-        <section id="functionality">
-            <h2>Functionality</h2>
-            <p>Visualize moisture levels and rainfall forecasts to guide irrigation decisions, reducing water waste.</p>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2024 Aqua Finder | <a href="#features">Back to top</a></p>
-    </footer>
+    <section class="hero" id="home">
+        <h1>AQUAFINDR</h1>
+        <p>Helping farmers stay ahead of hurricanes, droughts, and other water risks.</p>
+        <a href="#truth" onclick="smoothScroll('#truth')">LEARN MORE</a>
+    </section>
+
+    <section class="truth" id="truth">
+        <h2>WATER SECURITY IS VITAL</h2>
+    </section>
+
+    <script>
+        // Custom smooth scroll function
+        function smoothScroll(target) {
+            const element = document.querySelector(target);
+            window.scrollTo({
+                top: element.offsetTop,
+                behavior: 'smooth'
+            });
+        }
+    </script>
 </body>
 </html>
