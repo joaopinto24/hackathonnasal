@@ -12,17 +12,21 @@
         }
         .control-panel {
             position: absolute;
-            top: 10px;
+            bottom: 10px; /* Position at the bottom */
             left: 10px;
             background: rgba(255, 255, 255, 0.8);
             padding: 15px;
             border-radius: 5px;
-            z-index: 500; /* Ensures it stays on top */
+            z-index: 1000; /* Ensures it stays on top */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
         h4 {
             margin: 0 0 10px;
             font-size: 16px;
+        }
+        label {
+            display: block; /* Ensures labels take full width */
+            margin: 5px 0; /* Adds some spacing between items */
         }
     </style>
 </head>
@@ -33,7 +37,6 @@
             <input type="checkbox" id="land-monitoring" checked>
             Show Land Monitoring Layer
         </label>
-        <br><br>
         <label for="layer-select">Select Layer:</label>
         <select id="layer-select">
             <option value="MODIS_Terra_Corrected_Reflectance_True_Color" selected>True Color (MODIS)</option>
