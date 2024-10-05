@@ -10,13 +10,28 @@
             height: 100vh; /* Full height */
             width: 100%;   /* Full width */
         }
+        .control-panel {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 1000; /* Ensures it stays on top */
+        }
     </style>
 </head>
 <body>
+    <div class="control-panel">
+        <h4>Control Panel</h4>
+        <label>
+            <input type="checkbox" id="land-monitoring" checked>
+            Land Monitoring (NASA GIBS)
+        </label>
+    </div>
     <div id="map"></div>
     
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi"></script>
     <script>
         // Create the map
         const map = L.map('map').setView([20, 0], 2); // Center the map and set zoom level
@@ -27,9 +42,12 @@
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
+        // Create a variable for the GIBS layer
+        let gibsLayer;
+
         // Function to add NASA GIBS layer
         function addGibsLayer() {
-            const gibsLayer = L.tileLayer('https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?', {
+            gibsLayer = L.tileLayer('https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?', {
                 layers: 'MODIS_Terra_Corrected_Reflectance_True_Color',
                 format: 'image/png',
                 transparent: true,
@@ -43,6 +61,16 @@
 
         // Call the function to add GIBS layer
         addGibsLayer();
+
+        // Control panel toggle for land monitoring
+        const landMonitoringCheckbox = document.getElementById('land-monitoring');
+        landMonitoringCheckbox.addEventListener('change', () => {
+            if (landMonitoringCheckbox.checked) {
+                map.addLayer(gibsLayer); // Add the GIBS layer
+            } else {
+                map.removeLayer(gibsLayer); // Remove the GIBS layer
+            }
+        });
     </script>
 </body>
 </html>
