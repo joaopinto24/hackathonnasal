@@ -15,7 +15,7 @@ AgroFindr is a tool designed to assist farmers by providing a comprehensive map 
 
 ## How It Works
 
-Information is extracted from NASA's own APIs and then used to populate the map which is based on BigQuery Geo Viz by google
+Information is extracted from NASA's own APIs and then used to populate the map
 
 ---
 ## Contact Us
