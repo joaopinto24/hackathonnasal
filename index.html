@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cubano:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --background-color: rgb(18, 24, 27); /* Dark background */
+            --background-color: rgb(29, 45, 48); /* Dark background */
             --red-color: rgb(239, 68, 68); /* Pretty red background for the text */
             --blue-color: rgb(59, 130, 246); /* Blue color for the text */
             --green-color: rgb(34, 197, 94); /* Green color for the text */
@@ -18,77 +18,86 @@
             background-color: var(--background-color);
             margin: 0; /* Remove default margin */
             padding: 0; /* Remove default padding */
+            height: 100vh; /* Full height of the viewport */
             display: flex; /* Use flexbox for layout */
             flex-direction: column; /* Stack items vertically */
-            align-items: center; /* Center horizontally */
-            height: 100vh; /* Full height of the viewport */
+            align-items: center; /* Center items horizontally */
         }
 
         #titulo-red {
             margin-top: 20px; /* Space at the top for AgroFindr */
             color: var(--background-color); /* Text color matching background */
             background-color: var(--red-color); /* Red background */
-            padding: 10px 20px; /* Set horizontal padding larger */
+            padding: 10px 20px; /* Increased padding for better appearance */
             border: none; /* No border */
-            text-align: center;
+            text-align: center; /* Center text for the title */
             font-size: 36px; /* Font size */
             font-weight: 700; /* Make the font bold */
             cursor: default; /* Default cursor */
-            display: flex; /* Flexbox for centering text */
-            justify-content: center; /* Center text horizontally */
-            align-items: center; /* Center text vertically */
+            display: inline-block; /* Make title size fit the content */
         }
 
-        .titulo-container {
-            display: flex; /* Use flexbox for the titles */
-            justify-content: center; /* Center the titles horizontally */
-            align-items: center; /* Center vertically */
-            height: 100%; /* Allow full height for vertical centering */
-            margin-top: auto; /* Push it down to the center */
-            gap: 40px; /* Increased space between the titles */
+        .button-container {
+            display: flex; /* Use flexbox for the buttons */
+            justify-content: center; /* Center the buttons horizontally */
+            gap: 40px; /* Space between buttons */
+            margin-top: 20px; /* Space above buttons */
         }
 
         .titulo {
             color: var(--background-color); /* Text color matching background */
             padding: 10px 20px; /* Set horizontal padding */
-            border-radius: 10px; /* Round the corners */
             text-align: center;
             font-size: 36px; /* Font size */
             font-weight: 700; /* Make the font bold */
-            display: flex; /* Flexbox for centering text */
-            justify-content: center; /* Center text horizontally */
-            align-items: center; /* Center text vertically */
-            height: auto; /* Let the height fit the text */
+            cursor: pointer; /* Change cursor to pointer */
+            border: none; /* Remove button border */
+            outline: none; /* Remove button outline */
+        }
+
+        .button {
+            color: var(--background-color); /* Text color matching background */
+            padding: 10px 20px; /* Set horizontal padding */
+            border-radius: 10px; /* Round the corners */
+            font-size: 36px; /* Font size */
+            font-weight: 700; /* Make the font bold */
             cursor: pointer; /* Change cursor to pointer */
             transition: transform 0.2s, box-shadow 0.2s; /* Transition for effects */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 1); /* Fully black shadow effect */
+            border: none; /* Remove button border */
+            outline: none; /* Remove button outline */
         }
 
-        .titulo:hover {
+        .button:hover {
             transform: translateY(-2px); /* Lift effect on hover */
             box-shadow: 0 6px 12px rgba(0, 0, 0, 1); /* Increase shadow on hover */
         }
 
-        #titulo-blue {
+        #button-blue {
             background-color: var(--blue-color); /* Blue background */
         }
-        #titulo-green {
+        #button-green {
             background-color: var(--green-color); /* Green background */
         }
     </style>
 </head>
 
 <body> 
-    <h1 id="titulo-red">
+    <h1 class="titulo" id="titulo-red">
         AgroFindr
     </h1>
-    <div class="titulo-container">
-        <h1 id="titulo-blue" class="titulo">
-            Blue Title
-        </h1>
-        <h1 id="titulo-green" class="titulo">
-            Green Title
-        </h1>
+    <div class="button-container">
+        <button id="button-blue" class="button" onclick="openMain()">
+            Prototype
+        </button>
+        <button id="button-green" class="button" onclick="window.open('https://github.com/joaopinto24/hackathonnasal', '_blank')">
+            Source code
+        </button>
     </div>
+    <script>
+        function openMain() {
+            window.location.href = 'main.html'; // Redirect to main.html
+        }
+    </script>
 </body>
 </html>
