@@ -23,7 +23,7 @@
             background: white;
             padding: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            z-index: 1001; /* Increase z-index */
+            z-index: 1001; /* Ensure controls are above the map */
         }
         .legend {
             background: white;
@@ -32,7 +32,7 @@
             position: absolute;
             bottom: 30px;
             left: 10px;
-            z-index: 1001; /* Increase z-index */
+            z-index: 1001; /* Ensure legend is above the map */
         }
         .legend div {
             margin: 5px 0;
@@ -41,45 +41,130 @@
 </head>
 <body>
     <div id="controls">
-        <input type="checkbox" id="toggleMODIS" checked> Show MODIS Terra Corrected Reflectance<br>
+        <input type="checkbox" id="toggleVIIRS" checked> Show VIIRS Data<br>
+        <input type="checkbox" id="toggleVIIRS_A"> Show VIIRS-A Data<br>
+        <input type="checkbox" id="toggleSMAP"> Show SMAP Data<br>
         <input id="search" type="text" placeholder="Search for a location">
     </div>
     <div id="map"></div>
     <div class="legend">
         <strong>Legend</strong>
-        <div><span style="color: red;">&#x25A0;</span> MODIS Terra</div>
+        <div><span style="color: orange;">&#x25A0;</span> VIIRS</div>
+        <div><span style="color: purple;">&#x25A0;</span> VIIRS-A</div>
+        <div><span style="color: blue;">&#x25A0;</span> SMAP</div>
     </div>
 
     <script>
         // Initialize the Leaflet map
-        const map = L.map('map').setView([20, -5], 2);
+        const map = L.map('map').setView([20, -5], 2); // Initial view
 
-        // Add OpenStreetMap base layer (for reference)
+        // Add OpenStreetMap tiles
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
-        // Add MODIS Terra Corrected Reflectance Layer from NASA GIBS
-        const modisLayer = L.tileLayer('https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/MODIS_Terra_CorrectedReflectance_TrueColor/default/{time}/{tileMatrixSet}/{z}/{y}/{x}.jpg', {
-            attribution: 'NASA LANCE',
-            bounds: [[-90, -180], [90, 180]],
-            tileSize: 256,
-            zoomOffset: 1,
-            time: '2023-10-04', // Modify with the desired date or dynamically update
-            tileMatrixSet: '250m',
-            format: 'image/jpeg',
-            opacity: 0.75
-        }).addTo(map);
+        let viirsMarkers = [];
+        let viirsAMarkers = [];
+        let smapMarkers = [];
+        let marker;
 
-        // Toggle MODIS Terra Layer
-        document.getElementById("toggleMODIS").addEventListener("change", function () {
-            if (this.checked) {
-                modisLayer.addTo(map);
-            } else {
-                map.removeLayer(modisLayer);
-            }
-        });
+        // Fetch and display VIIRS Data
+        function fetchVIIRSData() {
+            // Placeholder for the actual data URL and fetching logic
+            const viirsDataUrl = 'https://earthdata.nasa.gov/learn/find-data/near-real-time/viirs'; 
+            console.log("Fetching VIIRS data...");
+            // Assuming data is in JSON format
+            fetch(viirsDataUrl)
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(item => {
+                        const lat = item.lat;
+                        const lon = item.lon;
+                        const caption = item.caption || 'VIIRS Data';
+
+                        const viirsMarker = L.marker([lat, lon], { icon: createIcon('orange') }).addTo(map)
+                            .bindPopup(`<strong>VIIRS:</strong> ${caption}`);
+                        viirsMarkers.push(viirsMarker);
+                    });
+
+                    toggleMarkers('toggleVIIRS', viirsMarkers);
+                })
+                .catch(error => console.error('Error fetching VIIRS data:', error));
+        }
+
+        // Fetch and display VIIRS-A Data
+        function fetchVIIRS_AData() {
+            // Placeholder for the actual data URL and fetching logic
+            const viirsADataUrl = 'https://earthdata.nasa.gov/learn/find-data/near-real-time/viirs-a';
+            console.log("Fetching VIIRS-A data...");
+            fetch(viirsADataUrl)
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(item => {
+                        const lat = item.lat;
+                        const lon = item.lon;
+                        const caption = item.caption || 'VIIRS-A Data';
+
+                        const viirsAMarker = L.marker([lat, lon], { icon: createIcon('purple') }).addTo(map)
+                            .bindPopup(`<strong>VIIRS-A:</strong> ${caption}`);
+                        viirsAMarkers.push(viirsAMarker);
+                    });
+
+                    toggleMarkers('toggleVIIRS_A', viirsAMarkers);
+                })
+                .catch(error => console.error('Error fetching VIIRS-A data:', error));
+        }
+
+        // Fetch and display SMAP Data
+        function fetchSMAPData() {
+            const smapDataUrl = 'https://earthdata.nasa.gov/learn/find-data/near-real-time/smap';
+            console.log("Fetching SMAP data...");
+            fetch(smapDataUrl)
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(item => {
+                        const lat = item.lat;
+                        const lon = item.lon;
+                        const caption = item.caption || 'SMAP Data';
+
+                        const smapMarker = L.marker([lat, lon], { icon: createIcon('blue') }).addTo(map)
+                            .bindPopup(`<strong>SMAP:</strong> ${caption}`);
+                        smapMarkers.push(smapMarker);
+                    });
+
+                    toggleMarkers('toggleSMAP', smapMarkers);
+                })
+                .catch(error => console.error('Error fetching SMAP data:', error));
+        }
+
+        // Helper function to toggle markers based on checkbox
+        function toggleMarkers(checkboxId, markers) {
+            document.getElementById(checkboxId).addEventListener("change", function () {
+                markers.forEach(m => {
+                    if (this.checked) {
+                        m.addTo(map);
+                    } else {
+                        map.removeLayer(m);
+                    }
+                });
+            });
+        }
+
+        // Function to create colored markers
+        function createIcon(color) {
+            return L.divIcon({
+                className: 'custom-icon',
+                html: `<div style="background-color: ${color}; width: 12px; height: 12px; border-radius: 50%;"></div>`,
+                iconSize: [12, 12],
+                iconAnchor: [6, 6]
+            });
+        }
+
+        // Fetch and add data
+        fetchVIIRSData();
+        fetchVIIRS_AData();
+        fetchSMAPData();
 
         // Function to handle search
         document.getElementById("search").addEventListener("keypress", function (e) {
@@ -95,7 +180,10 @@
 
                             // Center the map and add a marker
                             map.setView([lat, lon], 10);
-                            L.marker([lat, lon]).addTo(map);
+                            if (marker) {
+                                map.removeLayer(marker);
+                            }
+                            marker = L.marker([lat, lon]).addTo(map);
                         } else {
                             alert("Location not found.");
                         }
