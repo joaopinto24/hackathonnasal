@@ -3,101 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Styled Titles</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cubano:wght@700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --background-color: rgb(29, 45, 48); /* Dark background */
-            --red-color: rgb(239, 68, 68); /* Pretty red background for the text */
-            --blue-color: rgb(59, 130, 246); /* Blue color for the text */
-            --green-color: rgb(34, 197, 94); /* Green color for the text */
-        }
-
-        body {
-            font-family: 'Cubano', sans-serif;
-            background-color: var(--background-color);
-            margin: 0; /* Remove default margin */
-            padding: 0; /* Remove default padding */
-            height: 100vh; /* Full height of the viewport */
-            display: flex; /* Use flexbox for layout */
-            flex-direction: column; /* Stack items vertically */
-            align-items: center; /* Center items horizontally */
-        }
-
-        #titulo-red {
-            margin-top: 20px; /* Space at the top for AgroFindr */
-            color: var(--background-color); /* Text color matching background */
-            background-color: var(--red-color); /* Red background */
-            padding: 10px 20px; /* Increased padding for better appearance */
-            border: none; /* No border */
-            text-align: center; /* Center text for the title */
-            font-size: 36px; /* Font size */
-            font-weight: 700; /* Make the font bold */
-            cursor: default; /* Default cursor */
-            display: inline-block; /* Make title size fit the content */
-        }
-
-        .button-container {
-            display: flex; /* Use flexbox for the buttons */
-            justify-content: center; /* Center the buttons horizontally */
-            gap: 40px; /* Space between buttons */
-            margin-top: 20px; /* Space above buttons */
-        }
-
-        .titulo {
-            color: var(--background-color); /* Text color matching background */
-            padding: 10px 20px; /* Set horizontal padding */
-            text-align: center;
-            font-size: 36px; /* Font size */
-            font-weight: 700; /* Make the font bold */
-            cursor: pointer; /* Change cursor to pointer */
-            border: none; /* Remove button border */
-            outline: none; /* Remove button outline */
-        }
-
-        .button {
-            color: var(--background-color); /* Text color matching background */
-            padding: 10px 20px; /* Set horizontal padding */
-            border-radius: 10px; /* Round the corners */
-            font-size: 36px; /* Font size */
-            font-weight: 700; /* Make the font bold */
-            cursor: pointer; /* Change cursor to pointer */
-            transition: transform 0.2s, box-shadow 0.2s; /* Transition for effects */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 1); /* Fully black shadow effect */
-            border: none; /* Remove button border */
-            outline: none; /* Remove button outline */
-        }
-
-        .button:hover {
-            transform: translateY(-2px); /* Lift effect on hover */
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 1); /* Increase shadow on hover */
-        }
-
-        #button-blue {
-            background-color: var(--blue-color); /* Blue background */
-        }
-        #button-green {
-            background-color: var(--green-color); /* Green background */
-        }
-    </style>
+    <title>AgroFindr - Space Apps Hackathon 2024</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
+<body>
+    <header>
+        <h1>AgroFindr</h1>
+        <p>Your gateway to smarter agriculture using satellite data!</p>
+        <nav>
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#technology">Technology</a></li>
+                <li><a href="#team">Team</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <section id="about">
+            <h2>About AgroFindr</h2>
+            <p>AgroFindr is an innovative solution designed to optimize agricultural practices using satellite imagery and data analytics. Our goal is to empower farmers with actionable insights to improve yield and sustainability.</p>
+        </section>
 
-<body> 
-    <h1 class="titulo" id="titulo-red">
-        AgroFindr
-    </h1>
-    <div class="button-container">
-        <button id="button-blue" class="button" onclick="openMain()">
-            Prototype
-        </button>
-        <button id="button-green" class="button" onclick="window.open('https://github.com/joaopinto24/hackathonnasal', '_blank')">
-            Source code
-        </button>
-    </div>
-    <script>
-        function openMain() {
-            window.location.href = 'main.html'; // Redirect to main.html
-        }
-    </script>
+        <section id="features">
+            <h2>Features</h2>
+            <ul>
+                <li><strong>Satellite Monitoring:</strong> Real-time data on crop health.</li>
+                <li><strong>Weather Forecasting:</strong> Predictive analytics for better planning.</li>
+                <li><strong>Soil Analysis:</strong> Recommendations for soil improvement.</li>
+                <li><strong>Market Insights:</strong> Trends to maximize profit.</li>
+            </ul>
+        </section>
+
+        <section id="technology">
+            <h2>Technology Stack</h2>
+            <p>We leverage various technologies to bring AgroFindr to life:</p>
+            <ul>
+                <li>Python for backend development</li>
+                <li>JavaScript for interactive UI</li>
+                <li>Google Earth Engine for satellite data processing</li>
+                <li>React for front-end framework</li>
+                <li>PostgreSQL for data storage</li>
+            </ul>
+        </section>
+
+        <section id="team">
+            <h2>Meet the Team</h2>
+            <p>Our diverse team of experts is passionate about leveraging technology for sustainable agriculture:</p>
+            <ul>
+                <li>Jane Doe - Project Manager</li>
+                <li>John Smith - Data Scientist</li>
+                <li>Alice Johnson - Frontend Developer</li>
+                <li>Bob Brown - Backend Developer</li>
+            </ul>
+        </section>
+
+        <section id="contact">
+            <h2>Contact Us</h2>
+            <p>If you're interested in learning more about AgroFindr or collaborating with us, please reach out!</p>
+            <form>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" required></textarea>
+
+                <button type="submit">Send Message</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 AgroFindr. All rights reserved.</p>
+    </footer>
 </body>
 </html>
