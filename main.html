@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interactive World Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map { height: 600px; }
+        #messageBox { margin-top: 10px; font-size: 16px; }
+        .button { margin-left: 10px; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="messageBox"></div> <!-- Message box for user confirmation -->
+    
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map').setView([20, 0], 2);
+        var currentMarker = null; // Variable to store the current marker
+        var messageBox = document.getElementById('messageBox'); // Reference to message box
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+
+        // Function to handle map click
+        function onMapClick(e) {
+            // Reverse geocoding to get state name
+            fetch(`https://nominatim.openstreetmap.org/reverse?lat=${e.latlng.lat}&lon=${e.latlng.lng}&format=json`)
+                .then(response => response.json())
+                .then(data => {
+                    var stateName = data.address?.state || data.address?.country; // Fallback to country if state is not available
+
+                    if (stateName) {
+                        // Show confirmation options in the message box
+                        messageBox.innerHTML = `
+                            <span>Do you want to add a marker for ${stateName}?</span>
+                            <button class="button" id="confirm">Confirm</button>
+                            <button class="button" id="cancel">Cancel</button>
+                        `;
+
+                        // Handle confirm button click
+                        document.getElementById('confirm').onclick = function() {
+                            // Remove the previous marker if it exists
+                            if (currentMarker) {
+                                map.removeLayer(currentMarker);
+                            }
+
+                            // Create a new marker with the state name and add it to the map
+                            currentMarker = L.marker(e.latlng).addTo(map)
+                                .bindPopup(stateName)
+                                .openPopup();
+
+                            messageBox.innerHTML = `Marker added for ${stateName}.`;
+                        };
+
+                        // Handle cancel button click
+                        document.getElementById('cancel').onclick = function() {
+                            messageBox.innerHTML = 'Marker placement canceled.';
+                        };
+                    } else {
+                        // If no valid state information is retrieved
+                        messageBox.innerHTML = "Place Unavailable";
+
+                        // Handle confirm button click for unavailable place
+                        document.getElementById('confirm').onclick = function() {
+                            if (currentMarker) {
+                                map.removeLayer(currentMarker);
+                            }
+
+                            // Add marker without state information
+                            currentMarker = L.marker(e.latlng).addTo(map)
+                                .bindPopup("Unnamed Place")
+                                .openPopup();
+
+                            messageBox.innerHTML = 'Marker added for Unnamed Place.';
+                        };
+
+                        // Handle cancel button click
+                        document.getElementById('cancel').onclick = function() {
+                            messageBox.innerHTML = 'Marker placement canceled.';
+                        };
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching state name:', error);
+                    messageBox.innerHTML = `
+                        <span>Could not retrieve state information. Place unavailable.</span>
+                        <button class="button" id="cancel">Cancel</button>
+                    `;
+
+                    // Handle cancel button click on error
+                    document.getElementById('cancel').onclick = function() {
+                        messageBox.innerHTML = 'Marker placement canceled.';
+                    };
+                });
+        }
+
+        // Listen for click events on the map
+        map.on('click', onMapClick);
+
+        // Geolocation
+        map.locate({ setView: true, maxZoom: 16 });
+        map.on('locationfound', function(e) {
+            L.marker(e.latlng).addTo(map);
+        });
+    </script>
+</body>
+</html>
