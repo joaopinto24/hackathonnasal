@@ -29,7 +29,7 @@
                 west: -180,
             };
 
-            const gibsUrl = 'https://gibs.earthdata.nasa.gov/wms/your_layer_name?service=WMS&version=1.3.0&request=GetMap&layers=your_layer_name&bbox=your_bbox&width=800&height=600&srs=EPSG:4326&format=image/png';
+            const gibsUrl = 'https://gibs.earthdata.nasa.gov/wms/MODIS/Terra_NDVI?service=WMS&version=1.3.0&request=GetMap&layers=MODIS/Terra_NDVI&bbox=-180,-90,180,90&width=800&height=600&srs=EPSG:4326&format=image/png';
 
             fetch(gibsUrl)
                 .then(response => response.blob())
