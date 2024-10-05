@@ -3,29 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgroFindr - Space Apps Hackathon 2024</title>
+    <title>Precision Irrigation Management</title>
+    <script src="script.js" defer></script>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: #f5f5f5;
+            color: #333;
         }
 
         header {
-            background: #35424a;
-            color: #ffffff;
-            padding: 20px 0;
+            background-color: #343a40;
+            color: white;
+            padding: 20px;
             text-align: center;
         }
 
-        header h1 {
-            margin: 0;
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav .logo {
+            font-size: 1.5em;
+            font-weight: bold;
         }
 
         nav ul {
-            list-style: none;
+            list-style-type: none;
             padding: 0;
         }
 
@@ -35,132 +47,95 @@
         }
 
         nav ul li a {
-            color: #ffffff;
+            color: white;
             text-decoration: none;
+            font-weight: bold;
+        }
+
+        h1 {
+            margin: 20px 0 10px;
+        }
+
+        h2 {
+            color: #4CAF50;
+        }
+
+        main {
+            padding: 20px;
         }
 
         section {
-            margin: 20px;
+            margin-bottom: 30px;
+            background: white;
             padding: 20px;
-            background: #ffffff;
-            border-radius: 5px;
+            border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
+        #map-container {
+            height: 400px; /* Set the height of the map */
+            background-color: #e0e0e0; /* Placeholder for the map */
+            text-align: center;
+            line-height: 400px; /* Center text vertically */
+            border-radius: 8px;
+        }
+
         footer {
+            background-color: #343a40;
+            color: white;
             text-align: center;
             padding: 10px 0;
-            background: #35424a;
-            color: #ffffff;
             position: relative;
             bottom: 0;
             width: 100%;
         }
 
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-
-        form label {
-            margin: 10px 0 5px;
-        }
-
-        form input, form textarea {
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        form button {
-            padding: 10px;
-            background-color: #35424a;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        form button:hover {
-            background-color: #444;
+        footer a {
+            color: #4CAF50;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>AgroFindr</h1>
-        <p>Your gateway to smarter agriculture using satellite data!</p>
         <nav>
+            <div class="logo">Precision Irrigation</div>
             <ul>
-                <li><a href="#about">About</a></li>
                 <li><a href="#features">Features</a></li>
-                <li><a href="#technology">Technology</a></li>
-                <li><a href="#team">Team</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="#functionality">Functionality</a></li>
+                <li><a href="#map">Map</a></li>
             </ul>
         </nav>
+        <h1>Precision Irrigation Management</h1>
+        <p>Optimize irrigation with real-time data and advanced analytics.</p>
     </header>
-    
     <main>
-        <section id="about">
-            <h2>About AgroFindr</h2>
-            <p>AgroFindr is an innovative solution designed to optimize agricultural practices using satellite imagery and data analytics. Our goal is to empower farmers with actionable insights to improve yield and sustainability.</p>
-        </section>
-
         <section id="features">
             <h2>Features</h2>
-            <ul>
-                <li><strong>Satellite Monitoring:</strong> Real-time data on crop health.</li>
-                <li><strong>Weather Forecasting:</strong> Predictive analytics for better planning.</li>
-                <li><strong>Soil Analysis:</strong> Recommendations for soil improvement.</li>
-                <li><strong>Market Insights:</strong> Trends to maximize profit.</li>
-            </ul>
+            <p>Combine EO data with local weather forecasts to recommend optimal irrigation schedules based on soil moisture levels and evapotranspiration rates.</p>
         </section>
-
-        <section id="technology">
-            <h2>Technology Stack</h2>
-            <p>We leverage various technologies to bring AgroFindr to life:</p>
-            <ul>
-                <li>Python for backend development</li>
-                <li>JavaScript for interactive UI</li>
-                <li>Google Earth Engine for satellite data processing</li>
-                <li>React for front-end framework</li>
-                <li>PostgreSQL for data storage</li>
-            </ul>
+        <section id="functionality">
+            <h2>Functionality</h2>
+            <p>Visualize moisture levels and rainfall forecasts on a map to guide irrigation decisions, reducing water waste.</p>
         </section>
-
-        <section id="team">
-            <h2>Meet the Team</h2>
-            <p>Our diverse team of experts is passionate about leveraging technology for sustainable agriculture:</p>
-            <ul>
-                <li>Jane Doe - Project Manager</li>
-                <li>John Smith - Data Scientist</li>
-                <li>Alice Johnson - Frontend Developer</li>
-                <li>Bob Brown - Backend Developer</li>
-            </ul>
-        </section>
-
-        <section id="contact">
-            <h2>Contact Us</h2>
-            <p>If you're interested in learning more about AgroFindr or collaborating with us, please reach out!</p>
-            <form>
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" required>
-
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-
-                <label for="message">Message:</label>
-                <textarea id="message" name="message" required></textarea>
-
-                <button type="submit">Send Message</button>
-            </form>
+        <section id="map">
+            <h2>Irrigation Decision Map</h2>
+            <div id="map-container">
+                <!-- Map will be integrated here -->
+                <p>Map loading...</p>
+            </div>
         </section>
     </main>
-
     <footer>
-        <p>&copy; 2024 AgroFindr. All rights reserved.</p>
+        <p>&copy; 2024 Precision Irrigation Management | <a href="#features">Back to top</a></p>
     </footer>
+    <script>
+        // This file can be used for future functionalities like loading the map
+        document.addEventListener("DOMContentLoaded", function() {
+            // Placeholder for map loading logic
+            const mapContainer = document.getElementById("map-container");
+            mapContainer.innerHTML = "<p>Map will be displayed here.</p>";
+        });
+    </script>
 </body>
 </html>
