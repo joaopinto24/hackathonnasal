@@ -21,18 +21,9 @@ AgroFindr is a tool designed to assist farmers by providing a comprehensive map 
 
 ## How It Works
 
-1. **Explore the Map**: Open AgroFindr to view the interactive map that displays data related to pests, weather, and water resources.
-2. **Customize Your View**: Use the layering feature to display only the information that matters most to your farming needs.
-3. **Make Informed Choices**: Analyze the data to implement proactive measures for your crops.
-
-## Get Involved
-
-As a prototype, your feedback is invaluable! Share your thoughts and suggestions to help us enhance AgroFindr.
-
-## Contact Us
-
-For more information, create a issue on our github [here](https://github.com/joaopinto24/hackathonnasal/issues/new)!
+Information is extracted from NASA's own APIs and then used to populate the map which is based on BigQuery Geo Viz by google
 
 ---
+## Contact Us
 
-Navigate agricultural challenges with AgroFindr—your partner in informed farming!
+If you have any questions just create a issue on our github [here](https://github.com/joaopinto24/hackathonnasal/issues/new)!
