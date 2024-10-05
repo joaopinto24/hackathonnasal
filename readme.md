@@ -1,4 +1,4 @@
-# AgroFindr
+# AquaFindr
 
 AgroFindr is a tool designed to assist farmers by providing a comprehensive map that displays crucial information about pests, weather conditions and water availability. This intuitive map helps farmers visualize potential hazards and make informed decisions for their crops.
 
