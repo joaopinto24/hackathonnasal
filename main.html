@@ -23,7 +23,7 @@
             background: white;
             padding: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            z-index: 1001; /* Increase z-index */
+            z-index: 1001; /* Ensure controls are above the map */
         }
         .legend {
             background: white;
@@ -32,7 +32,7 @@
             position: absolute;
             bottom: 30px;
             left: 10px;
-            z-index: 1001; /* Increase z-index */
+            z-index: 1001; /* Ensure legend is above the map */
         }
         .legend div {
             margin: 5px 0;
@@ -41,20 +41,21 @@
 </head>
 <body>
     <div id="controls">
-        <input type="checkbox" id="toggleHurricanes" checked> Show Hurricanes<br>
-        <input type="checkbox" id="toggleFloods"> Show Floods<br>
-        <input type="checkbox" id="toggleRainfall"> Show Rainfall<br>
+        <input type="checkbox" id="toggleVIIRS" checked> Show VIIRS Data<br>
+        <input type="checkbox" id="toggleVIIRS_A"> Show VIIRS-A Data<br>
+        <input type="checkbox" id="toggleSMAP"> Show SMAP Data<br>
         <input id="search" type="text" placeholder="Search for a location">
     </div>
     <div id="map"></div>
     <div class="legend">
         <strong>Legend</strong>
-        <div><span style="color: red;">&#x25A0;</span> Hurricane</div>
-        <div><span style="color: blue;">&#x25A0;</span> Flood</div>
-        <div><span style="color: green;">&#x25A0;</span> Rainfall</div>
+        <div><span style="color: orange;">&#x25A0;</span> VIIRS</div>
+        <div><span style="color: purple;">&#x25A0;</span> VIIRS-A</div>
+        <div><span style="color: blue;">&#x25A0;</span> SMAP</div>
     </div>
 
     <script>
+        // Initialize the Leaflet map
         const map = L.map('map').setView([20, -5], 2); // Initial view
 
         // Add OpenStreetMap tiles
@@ -63,10 +64,107 @@
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
-        let hurricaneMarkers = [];
-        let floodMarkers = []; // Placeholder
-        let rainfallMarkers = []; // Placeholder
+        let viirsMarkers = [];
+        let viirsAMarkers = [];
+        let smapMarkers = [];
         let marker;
+
+        // Fetch and display VIIRS Data
+        function fetchVIIRSData() {
+            // Placeholder for the actual data URL and fetching logic
+            const viirsDataUrl = 'https://earthdata.nasa.gov/learn/find-data/near-real-time/viirs'; 
+            console.log("Fetching VIIRS data...");
+            // Assuming data is in JSON format
+            fetch(viirsDataUrl)
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(item => {
+                        const lat = item.lat;
+                        const lon = item.lon;
+                        const caption = item.caption || 'VIIRS Data';
+
+                        const viirsMarker = L.marker([lat, lon], { icon: createIcon('orange') }).addTo(map)
+                            .bindPopup(`<strong>VIIRS:</strong> ${caption}`);
+                        viirsMarkers.push(viirsMarker);
+                    });
+
+                    toggleMarkers('toggleVIIRS', viirsMarkers);
+                })
+                .catch(error => console.error('Error fetching VIIRS data:', error));
+        }
+
+        // Fetch and display VIIRS-A Data
+        function fetchVIIRS_AData() {
+            // Placeholder for the actual data URL and fetching logic
+            const viirsADataUrl = 'https://earthdata.nasa.gov/learn/find-data/near-real-time/viirs-a';
+            console.log("Fetching VIIRS-A data...");
+            fetch(viirsADataUrl)
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(item => {
+                        const lat = item.lat;
+                        const lon = item.lon;
+                        const caption = item.caption || 'VIIRS-A Data';
+
+                        const viirsAMarker = L.marker([lat, lon], { icon: createIcon('purple') }).addTo(map)
+                            .bindPopup(`<strong>VIIRS-A:</strong> ${caption}`);
+                        viirsAMarkers.push(viirsAMarker);
+                    });
+
+                    toggleMarkers('toggleVIIRS_A', viirsAMarkers);
+                })
+                .catch(error => console.error('Error fetching VIIRS-A data:', error));
+        }
+
+        // Fetch and display SMAP Data
+        function fetchSMAPData() {
+            const smapDataUrl = 'https://earthdata.nasa.gov/learn/find-data/near-real-time/smap';
+            console.log("Fetching SMAP data...");
+            fetch(smapDataUrl)
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(item => {
+                        const lat = item.lat;
+                        const lon = item.lon;
+                        const caption = item.caption || 'SMAP Data';
+
+                        const smapMarker = L.marker([lat, lon], { icon: createIcon('blue') }).addTo(map)
+                            .bindPopup(`<strong>SMAP:</strong> ${caption}`);
+                        smapMarkers.push(smapMarker);
+                    });
+
+                    toggleMarkers('toggleSMAP', smapMarkers);
+                })
+                .catch(error => console.error('Error fetching SMAP data:', error));
+        }
+
+        // Helper function to toggle markers based on checkbox
+        function toggleMarkers(checkboxId, markers) {
+            document.getElementById(checkboxId).addEventListener("change", function () {
+                markers.forEach(m => {
+                    if (this.checked) {
+                        m.addTo(map);
+                    } else {
+                        map.removeLayer(m);
+                    }
+                });
+            });
+        }
+
+        // Function to create colored markers
+        function createIcon(color) {
+            return L.divIcon({
+                className: 'custom-icon',
+                html: `<div style="background-color: ${color}; width: 12px; height: 12px; border-radius: 50%;"></div>`,
+                iconSize: [12, 12],
+                iconAnchor: [6, 6]
+            });
+        }
+
+        // Fetch and add data
+        fetchVIIRSData();
+        fetchVIIRS_AData();
+        fetchSMAPData();
 
         // Function to handle search
         document.getElementById("search").addEventListener("keypress", function (e) {
@@ -95,70 +193,6 @@
                     });
             }
         });
-
-        // Function to fetch hurricane data
-        function fetchHurricaneData() {
-            fetch('https://www.nhc.noaa.gov/gis-at.xml') // Replace with a valid hurricane data source
-                .then(response => response.text())
-                .then(data => {
-                    const parser = new DOMParser();
-                    const xmlDoc = parser.parseFromString(data, "text/xml");
-                    const storms = xmlDoc.getElementsByTagName("storm");
-
-                    Array.from(storms).forEach(storm => {
-                        const name = storm.getElementsByTagName("name")[0].textContent;
-                        const lat = parseFloat(storm.getElementsByTagName("lat")[0].textContent);
-                        const lon = parseFloat(storm.getElementsByTagName("lon")[0].textContent);
-
-                        // Create and store markers
-                        const stormMarker = L.marker([lat, lon], { icon: createIcon('red') }).addTo(map)
-                            .bindPopup(name);
-                        hurricaneMarkers.push(stormMarker);
-                    });
-
-                    // Toggle functionality for hurricanes
-                    document.getElementById("toggleHurricanes").addEventListener("change", function () {
-                        hurricaneMarkers.forEach(m => {
-                            if (this.checked) {
-                                m.addTo(map);
-                            } else {
-                                map.removeLayer(m);
-                            }
-                        });
-                    });
-                })
-                .catch(error => console.error('Error fetching hurricane data:', error));
-        }
-
-        // Function to create colored markers
-        function createIcon(color) {
-            return L.divIcon({
-                className: 'custom-icon',
-                html: `<div style="background-color: ${color}; width: 12px; height: 12px; border-radius: 50%;"></div>`,
-                iconSize: [12, 12],
-                iconAnchor: [6, 6]
-            });
-        }
-
-        // Call function to fetch hurricane data
-        fetchHurricaneData();
-
-        // Placeholder functions for floods and rainfall (implement similarly)
-        function fetchFloodData() {
-            // Add flood data fetching and marker creation here
-            // For now, we'll just log a message
-            console.log("Flood data fetching not implemented.");
-        }
-
-        function fetchRainfallData() {
-            // Add rainfall data fetching and marker creation here
-            // For now, we'll just log a message
-            console.log("Rainfall data fetching not implemented.");
-        }
-
-        // Call placeholder functions (if desired)
-        fetchFloodData();
-        fetchRainfallData();
 
     </script>
 </body>
