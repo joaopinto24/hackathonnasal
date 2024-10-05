@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AquaFindr</title>
-    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500&display=swap" rel="stylesheet"> <!-- Set font weight to 500 -->
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500&display=swap" rel="stylesheet">
     <style>
         body {
             background-color: rgb(29, 29, 29); /* Dark background */
@@ -43,21 +43,26 @@
             padding: 20px;
             padding-right: 40px;
             padding-left: 40px;
-            font-size: 124px;
+            font-size: 24px; /* Adjusted font size for better fit */
             font-weight: 600; /* Added font weight */
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Shadow for depth */
-            position: absolute;
-            text-align: center; /* Center align text inside the box */
-            margin-top: 20px; /* Space above the hard truth box */
-            top: 50%;
-            left: 50rem;
+            cursor: pointer; /* Pointer cursor for button */
+            border: none; /* Remove border */
+            border-radius: 5px; /* Rounded corners */
+            transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transitions */
+            text-align: center; /* Center align text inside the button */
+            margin-top: 20px; /* Space above the button */
+        }
+        .hard-truth:hover {
+            background-color: rgb(220, 59, 59); /* Darker red on hover */
+            transform: translateY(-2px); /* Slight upward movement on hover */
         }
         .image {
             margin-left: auto; /* Push image to the right */
             margin-right: 30px; /* Space between image and the edge of the page */
         }
         .lorem-section {
-            background-color: rgb(29, 29, 29) ; /* Background color for new section */
+            background-color: rgb(29, 29, 29); /* Background color for new section */
             color: #ffffff;
             padding: 50px;
             height: 100vh; /* Full viewport height for new section */
@@ -72,32 +77,86 @@
             margin-bottom: 20px; /* Space below heading */
         }
         .lorem-section p {
-            font-size: 20px; /* Font size for paragraph */
-            max-width: 800px; /* Limit paragraph width */
+            font-size: 42px; /* Font size for paragraph */
+            max-width: 1800px; /* Limit paragraph width */
+        }
+        .try-it-out {
+            display: flex;
+            flex-direction: column; /* Stack title and button */
+            align-items: center; /* Center horizontally */
+            justify-content: center; /* Center vertically */
+            height: 100vh; /* Full viewport height for new section */
+            background: linear-gradient(to bottom, rgb(29, 29, 29), rgb(34, 197, 94)); /* Gradient from dark to green */
+            color: #ffffff;
+            text-align: center; /* Center text */
+            padding: 50px; /* Padding for the section */
+        }
+        .try-it-out h2 {
+            font-size: 48px; /* Increased size for section title */
+            margin-bottom: 20px; /* Space below title */
+        }
+        .try-it-out button {
+            background-color: rgb(59, 130, 246); /* Blue button */
+            color: white;
+            padding: 20px 40px; /* Increased padding for button */
+            font-size: 24px; /* Increased font size for button */
+            border: none; /* No border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor */
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+        .try-it-out button:hover {
+            background-color: rgb(42, 87, 178); /* Darker blue on hover */
+        }
+        .lorem-section button {
+            background-color: rgb(59, 130, 246); /* Blue button */
+            color: white;
+            padding: 15px 30px; /* Increased padding for button */
+            font-size: 20px; /* Increased font size for button */
+            border: none; /* No border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor */
+            transition: background-color 0.3s ease; /* Smooth transition */
+            margin-top: 20px; /* Space above button */
+        }
+        .lorem-section button:hover {
+            background-color: rgb(42, 87, 178); /* Darker blue on hover */
         }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.hard-truth').addEventListener('click', function() {
+                document.querySelector('.lorem-section').scrollIntoView({ behavior: 'smooth' });
+            });
+            document.querySelector('.lorem-section button').addEventListener('click', function() {
+                document.querySelector('.try-it-out').scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="main-container">
         <div class="text-section">
             <h1>Know More Than the Competition</h1>
             <h2>AquaFindr alerts you about droughts, floods, and hurricanes in the area.</h2>
-            <div class="hard-truth">HARD TRUTH</div>
+            <div class="hard-truth">Learn the hard truth</div>
         </div>
-
-        <!-- Placeholder for the image -->
         <img src="https://via.placeholder.com/300x200.png?text=Image" alt="Placeholder Image" class="image">
     </div>
 
-    <!-- New section with Lorem Ipsum -->
     <div class="lorem-section">
-        <h2>Lorem Ipsum Section</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet accumsan arcu. 
-        Praesent ac bibendum erat. Sed nec iaculis odio, in gravida arcu. Fusce non elementum odio. 
-        Quisque vel magna et nulla egestas tincidunt ut vitae massa. Suspendisse vitae dictum ipsum. 
-        Morbi vehicula tellus ac felis finibus, ac scelerisque dui tristique. Phasellus vitae felis 
-        eu nisi viverra volutpat ac non justo. Nullam facilisis mi et sapien interdum, eu gravida leo 
-        luctus. Nulla facilisi.</p>
+        <h2>The struggle of farmers</h2>
+        <p>Farmers have suffered for years and years from droughts, hurricanes, etc.
+            Our app aims to help them with those issues using advanced weather info gathered from NASA to show them where they might be affected.
+        </p>
+        <button>Where can I try it out?</button> <!-- New button added here -->
+    </div>
+
+    <div class="try-it-out">
+        <h2>HERE</h2>
+        <a href="main.html">
+            <button>Open AquaFindr</button>
+        </a>
     </div>
 </body>
 </html>
