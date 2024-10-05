@@ -8,7 +8,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 // Function to fetch data from NASA's API
 async function fetchNASAData() {
-    const response = await fetch('https://api.nasa.gov/planetary/earth/assets?api_key=YOUR_API_KEY&date=2023-10-01');
+    const response = await fetch('https://api.nasa.gov/planetary/earth/assets?api_key=yuw4VtoVgZLdnCRsbVbQSuCM2vU3sYxIfIB0JEsK&date=2023-10-01');
     const data = await response.json();
     
     // Example to plot the data points
