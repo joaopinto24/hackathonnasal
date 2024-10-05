@@ -5,7 +5,7 @@ AgroFindr is a tool designed to assist farmers by providing a comprehensive map 
 ## Use
 
 #### Interactive Map Interface
-- **Visualize Risks**: Use our map to see real-time data related to pest activity and weather patterns in your area.
+- **Visualize Risks**: Use our map to see data related to pest activity and weather patterns in your area.
 - **Customizable Layers**: Toggle different data layers to focus on specific hazards relevant to your farming practices.
 
 #### 2. Pest and Weather Information
