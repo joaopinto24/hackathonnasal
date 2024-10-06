@@ -1,162 +1,78 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AquaFindr</title>
-    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500&display=swap" rel="stylesheet">
+    <title>Smooth Scroll Website</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            background-color: rgb(29, 29, 29); /* Dark background */
-            color: #ffffff;
-            font-family: 'Rubik', sans-serif;
+        * {
             margin: 0;
-            overflow-x: hidden; /* Prevent horizontal scrolling */
+            padding: 0;
+            box-sizing: border-box;
         }
-        .main-container {
+        body, html {
+            font-family: 'Rubik', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a, #2c2c2c);
+            color: white;
+            scroll-behavior: smooth;
+        }
+        .section {
+            min-height: 100vh;
             display: flex;
-            align-items: flex-start; /* Align items at the top */
-            justify-content: space-between; /* Space between text and image */
-            padding: 5rem; /* Padding for the top section */
-            height: 100vh; /* Full viewport height */
-        }
-        .text-section {
-            padding: 30px; /* Increased padding inside text section */
-            max-width: 600px; /* Set max width for text section */
-            text-align: left; /* Align text to the left */
-        }
-        h1 {
-            font-size: 48px; /* Increased font size */
-            font-weight: 500; /* Added font weight */
-            color: rgb(34, 197, 94); /* Updated color */
-            margin-bottom: 10px; /* Space between title and subtitle */
-        }
-        h2 {
-            font-size: 28px; /* Increased font size */
-            font-weight: 400; /* Slightly lighter font weight for subtitle */
-            color: rgb(255, 255, 255); /* White */
-            margin-bottom: 20px; /* Space between subtitle and hard truth */
-        }
-        .hard-truth {
-            background-color: rgb(239, 68, 68); /* Red */
-            color: rgb(29,29,29);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
             padding: 20px;
-            padding-right: 40px;
-            padding-left: 40px;
-            font-size: 24px; /* Adjusted font size for better fit */
-            font-weight: 600; /* Added font weight */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Shadow for depth */
-            cursor: pointer; /* Pointer cursor for button */
-            border: none; /* Remove border */
-            border-radius: 5px; /* Rounded corners */
-            transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transitions */
-            text-align: center; /* Center align text inside the button */
-            margin-top: 20px; /* Space above the button */
+            position: relative;
         }
-        .hard-truth:hover {
-            background-color: rgb(220, 59, 59); /* Darker red on hover */
-            transform: translateY(-2px); /* Slight upward movement on hover */
+        #section1, #section2, #section3 {
+            background-color: transparent;
         }
-        .image {
-            margin-left: auto; /* Push image to the right */
-            margin-right: 30px; /* Space between image and the edge of the page */
-        }
-        .lorem-section {
-            background-color: rgb(29, 29, 29); /* Background color for new section */
-            color: #ffffff;
-            padding: 50px;
-            height: 100vh; /* Full viewport height for new section */
-            display: flex; /* Flexbox for centering */
-            flex-direction: column; /* Align items in a column */
-            align-items: center; /* Center horizontally */
-            justify-content: center; /* Center vertically */
-            text-align: center; /* Center text in the new section */
-        }
-        .lorem-section h2 {
-            font-size: 36px; /* Heading size for new section */
-            margin-bottom: 20px; /* Space below heading */
-        }
-        .lorem-section p {
-            font-size: 42px; /* Font size for paragraph */
-            max-width: 1800px; /* Limit paragraph width */
-        }
-        .try-it-out {
-            display: flex;
-            flex-direction: column; /* Stack title and button */
-            align-items: center; /* Center horizontally */
-            justify-content: center; /* Center vertically */
-            height: 100vh; /* Full viewport height for new section */
-            background: linear-gradient(to bottom, rgb(29, 29, 29), rgb(34, 197, 94)); /* Gradient from dark to green */
-            color: #ffffff;
-            text-align: center; /* Center text */
-            padding: 50px; /* Padding for the section */
-        }
-        .try-it-out h2 {
-            font-size: 48px; /* Increased size for section title */
-            margin-bottom: 20px; /* Space below title */
-        }
-        .try-it-out button {
-            background-color: rgb(59, 130, 246); /* Blue button */
+        h1 { font-size: 3rem; margin-bottom: 1rem; }
+        p { font-size: 1.2rem; max-width: 600px; margin-bottom: 1.5rem; }
+        .next-section {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 20px 40px; /* Increased padding for button */
-            font-size: 24px; /* Increased font size for button */
-            border: none; /* No border */
-            border-radius: 5px; /* Rounded corners */
-            cursor: pointer; /* Pointer cursor */
-            transition: background-color 0.3s ease; /* Smooth transition */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.5);
+            text-decoration: none; /* Removed underline */
         }
-        .try-it-out button:hover {
-            background-color: rgb(42, 87, 178); /* Darker blue on hover */
-        }
-        .lorem-section button {
-            background-color: rgb(59, 130, 246); /* Blue button */
-            color: white;
-            padding: 15px 30px; /* Increased padding for button */
-            font-size: 20px; /* Increased font size for button */
-            border: none; /* No border */
-            border-radius: 5px; /* Rounded corners */
-            cursor: pointer; /* Pointer cursor */
-            transition: background-color 0.3s ease; /* Smooth transition */
-            margin-top: 20px; /* Space above button */
-        }
-        .lorem-section button:hover {
-            background-color: rgb(42, 87, 178); /* Darker blue on hover */
+        .next-section:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
         }
     </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelector('.hard-truth').addEventListener('click', function() {
-                document.querySelector('.lorem-section').scrollIntoView({ behavior: 'smooth' });
-            });
-            document.querySelector('.lorem-section button').addEventListener('click', function() {
-                document.querySelector('.try-it-out').scrollIntoView({ behavior: 'smooth' });
-            });
-        });
-    </script>
 </head>
 <body>
-    <div class="main-container">
-        <div class="text-section">
-            <h1>Know More Than the Competition</h1>
-            <h2>AquaFindr alerts you about droughts, floods, and hurricanes in the area.</h2>
-            <div class="hard-truth">Learn the hard truth</div>
+    <div class="section" id="section1">
+        <div>
+            <h1>Welcome to Our Smooth Scroll Website</h1>
+            <p>This is the hero section. Add a striking headline and a brief introduction to your website here.</p>
+            <a href="#section2" class="next-section">Next Section</a> <!-- Changed text and removed underline -->
         </div>
-        <img src="https://via.placeholder.com/300x200.png?text=Image" alt="Placeholder Image" class="image">
     </div>
 
-    <div class="lorem-section">
-        <h2>The struggle of farmers</h2>
-        <p>Farmers have suffered for years and years from droughts, hurricanes, etc.
-            Our app aims to help them with those issues using advanced weather info gathered from NASA to show them where they might be affected. 
-        </p>
-        <button>Where can I try it out?</button> <!-- New button added here -->
+    <div class="section" id="section2">
+        <div>
+            <h1>Our Services</h1>
+            <p>This section could showcase your main services or products. Use engaging visuals and concise descriptions.</p>
+            <a href="#section3" class="next-section">Next Section</a> <!-- Changed text and removed underline -->
+        </div>
     </div>
 
-    <div class="try-it-out">
-        <h2>HERE</h2>
-        <a href="main.html">
-            <button>Open AquaFindr</button>
-        </a>
+    <div class="section" id="section3">
+        <div>
+            <h1>Contact Us</h1>
+            <p>The final section could include a contact form, social media links, or a call-to-action to engage your visitors.</p>
+            <a href="#section1" class="next-section">Back to Top</a> <!-- Changed text and removed underline -->
+        </div>
     </div>
 </body>
 </html>
