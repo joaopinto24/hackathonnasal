@@ -13,6 +13,7 @@
             margin: 0;
             padding: 20px;
             background-color: #f0f5f9;
+            color: #333;
         }
         .container {
             max-width: 1200px;
@@ -22,6 +23,8 @@
             color: #1e3a8a;
             text-align: center;
             margin-bottom: 20px;
+            font-size: 2.5em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
         #map {
             height: 500px;
@@ -33,6 +36,9 @@
             font-size: 18px;
             color: #4a5568;
             text-align: center;
+            padding: 10px;
+            background-color: #e2e8f0;
+            border-radius: 5px;
         }
         #nasaData {
             margin-top: 30px;
@@ -47,6 +53,7 @@
         }
         h3, h4 {
             color: #2c5282;
+            margin-top: 20px;
         }
         p {
             color: #4a5568;
@@ -55,11 +62,42 @@
         .custom-button {
             background-color: #4a5568;
             color: white;
-            padding: 10px;
+            padding: 10px 15px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+        .custom-button:hover {
+            background-color: #2d3748;
+        }
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        li {
+            margin-bottom: 5px;
+            padding: 5px;
+            background-color: #f7fafc;
+            border-radius: 3px;
+        }
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .data-item {
+            background-color: #e2e8f0;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .data-item strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #2c5282;
         }
     </style>
 </head>
@@ -89,9 +127,10 @@
             maxZoom: 18,
         }).addTo(map);
 
-        // Add search control
-        L.Control.geocoder({
-            defaultMarkGeocode: false
+        // Add search control with Nominatim geocoder
+        var geocoder = L.Control.geocoder({
+            defaultMarkGeocode: false,
+            geocoder: L.Control.Geocoder.nominatim()
         }).on('markgeocode', function(e) {
             var bbox = e.geocode.bbox;
             var poly = L.polygon([
@@ -141,16 +180,45 @@
                     // Calculate evapotranspiration (simplified Penman-Monteith equation)
                     const evapotranspiration = calculateEvapotranspiration(temperature, humidity, windSpeed, solarRadiation);
 
+                    // Get recommended crops
+                    const recommendedCrops = getRecommendedCrops(temperature, precipitation, soilMoisture);
+
+                    // Get climate type
+                    const climateType = getClimateType(temperature, precipitation);
+
                     // Display NASA data
                     nasaDataBox.innerHTML = `
                         <h3>NASA Earth Data for Selected Location</h3>
-                        <p><strong>Precipitation:</strong> ${precipitation.toFixed(2)} mm/day</p>
-                        <p><strong>Temperature:</strong> ${temperature.toFixed(1)}°C</p>
-                        <p><strong>Relative Humidity:</strong> ${humidity.toFixed(1)}%</p>
-                        <p><strong>Soil Moisture:</strong> ${soilMoisture.toFixed(1)}%</p>
-                        <p><strong>Estimated Evapotranspiration:</strong> ${evapotranspiration.toFixed(2)} mm/day</p>
-                        <h4>Irrigation Guide:</h4>
+                        <div class="data-grid">
+                            <div class="data-item">
+                                <strong>Precipitation</strong>
+                                ${precipitation.toFixed(2)} mm/day
+                            </div>
+                            <div class="data-item">
+                                <strong>Temperature</strong>
+                                ${temperature.toFixed(1)}°C
+                            </div>
+                            <div class="data-item">
+                                <strong>Relative Humidity</strong>
+                                ${humidity.toFixed(1)}%
+                            </div>
+                            <div class="data-item">
+                                <strong>Soil Moisture</strong>
+                                ${soilMoisture.toFixed(1)}%
+                            </div>
+                            <div class="data-item">
+                                <strong>Estimated Evapotranspiration</strong>
+                                ${evapotranspiration.toFixed(2)} mm/day
+                            </div>
+                            <div class="data-item">
+                                <strong>Climate Type</strong>
+                                ${climateType}
+                            </div>
+                        </div>
+                        <h4>Irrigation Guide</h4>
                         ${getIrrigationGuide(precipitation, soilMoisture, evapotranspiration)}
+                        <h4>Recommended Crops</h4>
+                        ${recommendedCrops}
                     `;
                 })
                 .catch(error => {
@@ -179,7 +247,7 @@
             let guide = "<p>";
             
             if (precipitation < 1 && soilMoisture < 30) {
-                guide += "Immediate irrigation recommended. Soil moisture is critically low (${soilMoisture.toFixed(1)}%) and there's little recent precipitation (${precipitation.toFixed(2)} mm/day). ";
+                guide += `Immediate irrigation recommended. Soil moisture is critically low (${soilMoisture.toFixed(1)}%) and there's little recent precipitation (${precipitation.toFixed(2)} mm/day). `;
                 guide += `Consider applying 20-30 mm of water immediately, followed by 10-15 mm every 2-3 days until soil moisture improves. Monitor closely as evapotranspiration is ${evapotranspiration.toFixed(2)} mm/day.</p>`;
             } else if (precipitation < 3 && soilMoisture < 50) {
                 guide += `Consider irrigation in the next few days if no rain is forecasted. Current soil moisture (${soilMoisture.toFixed(1)}%) is below optimal levels. `;
@@ -192,6 +260,73 @@
             guide += "<p>Remember to adjust these recommendations based on specific crop needs, growth stage, and local weather forecasts. Early morning irrigation is generally most effective to minimize water loss through evaporation.</p>";
             
             return guide;
+        }
+
+        function getRecommendedCrops(temperature, precipitation, soilMoisture) {
+            let crops = "<ul>";
+            const cropList = {
+                tropical: ["Banana", "Pineapple", "Mango", "Papaya", "Coconut", "Sugarcane", "Cacao", "Coffee", "Rubber", "Oil Palm"],
+                subtropical: ["Citrus fruits", "Avocado", "Olive", "Fig", "Pomegranate", "Kiwi", "Loquat", "Persimmon", "Macadamia nut", "Pecan"],
+                temperate: ["Apple", "Pear", "Cherry", "Plum", "Peach", "Grape", "Strawberry", "Raspberry", "Blueberry", "Blackberry"],
+                arid: ["Date palm", "Jojoba", "Aloe vera", "Prickly pear", "Pomegranate", "Pistachio", "Olive", "Agave", "Mesquite", "Tamarind"],
+                mediterranean: ["Olive", "Grape", "Fig", "Almond", "Citrus fruits", "Pomegranate", "Artichoke", "Fennel", "Rosemary", "Thyme"],
+                coolTemperate: ["Wheat", "Barley", "Oats", "Rye", "Potato", "Sugar beet", "Rapeseed", "Flax", "Peas", "Lentils"],
+                warmTemperate: ["Corn (Maize)", "Soybeans", "Cotton", "Sunflower", "Sorghum", "Millet", "Peanuts", "Tobacco", "Sweet potato", "Sesame"],
+                humid: ["Rice", "Tea", "Jute", "Bamboo", "Taro", "Cassava", "Yam", "Ginger", "Turmeric", "Cardamom"]
+            };
+
+            let selectedCrops = [];
+
+            if (temperature > 25 && precipitation > 1500 && soilMoisture > 60) {
+                selectedCrops = cropList.tropical;
+            } else if (temperature > 20 && temperature <= 25 && precipitation > 800 && soilMoisture > 50) {
+                selectedCrops = cropList.subtropical;
+            } else if (temperature > 10 && temperature <= 20 && precipitation > 500 && soilMoisture > 40) {
+                selectedCrops = cropList.temperate;
+            } else if (temperature > 20 && precipitation < 250 && soilMoisture < 30) {
+                selectedCrops = cropList.arid;
+            } else if (temperature > 15 && temperature <= 20 && precipitation > 400 && precipitation <= 700 && soilMoisture > 30) {
+                selectedCrops = cropList.mediterranean;
+            } else if (temperature <= 10 && precipitation > 300 && soilMoisture > 40) {
+                selectedCrops = cropList.coolTemperate;
+            } else if (temperature > 20 && temperature <= 25 && precipitation > 500 && precipitation <= 1000 && soilMoisture > 40) {
+                selectedCrops = cropList.warmTemperate;
+            } else if (temperature > 20 && precipitation > 1000 && soilMoisture > 70) {
+                selectedCrops = cropList.humid;
+            }
+
+            if (selectedCrops.length > 0) {
+                crops += selectedCrops.map(crop => `<li>${crop}</li>`).join('');
+            } else {
+                crops += "<li>Consider consulting a local agricultural expert for crop recommendations suited to these specific conditions.</li>";
+            }
+
+            crops += "</ul>";
+            crops += "<p>Note: These recommendations are based on general climate conditions. Local factors such as soil type, pests, and market demand should also be considered when choosing crops.</p>";
+
+            return crops;
+        }
+
+        function getClimateType(temperature, precipitation) {
+            if (temperature > 18 && precipitation > 1500) {
+                return "Tropical";
+            } else if (temperature > 18 && precipitation > 500 && precipitation <= 1500) {
+                return "Subtropical";
+            } else if (temperature > 10 && temperature <= 18 && precipitation > 500) {
+                return "Temperate";
+            } else if (temperature > 18 && precipitation < 250) {
+                return "Arid";
+            } else if (temperature > 15 && temperature <= 18 && precipitation > 400 && precipitation <= 700) {
+                return "Mediterranean";
+            } else if (temperature <= 10 && precipitation > 300) {
+                return "Cool Temperate";
+            } else if (temperature > 18 && temperature <= 25 && precipitation > 500 && precipitation <= 1000) {
+                return "Warm Temperate";
+            } else if (temperature > 18 && precipitation > 1000) {
+                return "Humid Subtropical";
+            } else {
+                return "Mixed/Other";
+            }
         }
 
         function onLocationSelect(latlng, placeName) {
