@@ -1,108 +1,214 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Interactive World Map</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroFindr - Interactive World Map with NASA Data</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        #map { height: 600px; }
-        #messageBox { margin-top: 10px; font-size: 16px; }
-        .button { margin-left: 10px; }
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f5f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #1e3a8a;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #map {
+            height: 500px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        #messageBox {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #4a5568;
+            text-align: center;
+        }
+        #nasaData {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .leaflet-control-geocoder {
+            top: 10px;
+            right: 10px;
+        }
+        h3, h4 {
+            color: #2c5282;
+        }
+        p {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        .custom-button {
+            background-color: #4a5568;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
-    <div id="map"></div>
-    <div id="messageBox"></div> <!-- Message box for user confirmation -->
+    <div class="container">
+        <h1>AgroFindr</h1>
+        <div id="map"></div>
+        <div id="messageBox"></div>
+        <div id="nasaData"></div>
+    </div>
     
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
     <script>
-        var map = L.map('map').setView([20, 0], 2);
-        var currentMarker = null; // Variable to store the current marker
-        var messageBox = document.getElementById('messageBox'); // Reference to message box
+        var map = L.map('map', {
+            center: [20, 0],
+            zoom: 3,
+            minZoom: 3,
+            maxBounds: [[-90, -180], [90, 180]],
+            maxBoundsViscosity: 1.0
+        });
+        var currentMarker = null;
+        var messageBox = document.getElementById('messageBox');
+        var nasaDataBox = document.getElementById('nasaData');
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
+            maxZoom: 18,
         }).addTo(map);
 
-        // Function to handle map click
-        function onMapClick(e) {
-            // Reverse geocoding to get state name
-            fetch(`https://nominatim.openstreetmap.org/reverse?lat=${e.latlng.lat}&lon=${e.latlng.lng}&format=json`)
+        // Add search control
+        L.Control.geocoder({
+            defaultMarkGeocode: false
+        }).on('markgeocode', function(e) {
+            var bbox = e.geocode.bbox;
+            var poly = L.polygon([
+                bbox.getSouthEast(),
+                bbox.getNorthEast(),
+                bbox.getNorthWest(),
+                bbox.getSouthWest()
+            ]).addTo(map);
+            map.fitBounds(poly.getBounds());
+            onLocationSelect(e.geocode.center, e.geocode.name);
+        }).addTo(map);
+
+        // Add custom "My Current Location" button
+        L.Control.CurrentLocation = L.Control.extend({
+            onAdd: function(map) {
+                var btn = L.DomUtil.create('button', 'custom-button');
+                btn.innerHTML = 'My Current Location';
+                btn.onclick = function() {
+                    map.locate({setView: true, maxZoom: 16});
+                };
+                return btn;
+            }
+        });
+        L.control.currentLocation = function(opts) {
+            return new L.Control.CurrentLocation(opts);
+        }
+        L.control.currentLocation({ position: 'bottomleft' }).addTo(map);
+
+        function fetchNASAData(lat, lon) {
+            // NASA POWER API endpoint
+            const nasaAPIUrl = `https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR,T2M,RH2M,GWETPROF,GWETROOT,GWETTOP,WS2M,ALLSKY_SFC_SW_DWN&community=AG&longitude=${lon}&latitude=${lat}&start=20230101&end=20230101&format=JSON`;
+
+            fetch(nasaAPIUrl)
                 .then(response => response.json())
                 .then(data => {
-                    var stateName = data.address?.state || data.address?.country; // Fallback to country if state is not available
+                    const properties = data.properties;
+                    const parameter = properties.parameter;
 
-                    if (stateName) {
-                        // Show confirmation options in the message box
-                        messageBox.innerHTML = `
-                            <span>Do you want to add a marker for ${stateName}?</span>
-                            <button class="button" id="confirm">Confirm</button>
-                            <button class="button" id="cancel">Cancel</button>
-                        `;
+                    // Extract the latest data
+                    const precipitation = parameter.PRECTOTCORR['20230101'];
+                    const temperature = parameter.T2M['20230101'];
+                    const humidity = parameter.RH2M['20230101'];
+                    const soilMoisture = parameter.GWETPROF['20230101'];
+                    const windSpeed = parameter.WS2M['20230101'];
+                    const solarRadiation = parameter.ALLSKY_SFC_SW_DWN['20230101'];
 
-                        // Handle confirm button click
-                        document.getElementById('confirm').onclick = function() {
-                            // Remove the previous marker if it exists
-                            if (currentMarker) {
-                                map.removeLayer(currentMarker);
-                            }
+                    // Calculate evapotranspiration (simplified Penman-Monteith equation)
+                    const evapotranspiration = calculateEvapotranspiration(temperature, humidity, windSpeed, solarRadiation);
 
-                            // Create a new marker with the state name and add it to the map
-                            currentMarker = L.marker(e.latlng).addTo(map)
-                                .bindPopup(stateName)
-                                .openPopup();
-
-                            messageBox.innerHTML = `Marker added for ${stateName}.`;
-                        };
-
-                        // Handle cancel button click
-                        document.getElementById('cancel').onclick = function() {
-                            messageBox.innerHTML = 'Marker placement canceled.';
-                        };
-                    } else {
-                        // If no valid state information is retrieved
-                        messageBox.innerHTML = "Place Unavailable";
-
-                        // Handle confirm button click for unavailable place
-                        document.getElementById('confirm').onclick = function() {
-                            if (currentMarker) {
-                                map.removeLayer(currentMarker);
-                            }
-
-                            // Add marker without state information
-                            currentMarker = L.marker(e.latlng).addTo(map)
-                                .bindPopup("Unnamed Place")
-                                .openPopup();
-
-                            messageBox.innerHTML = 'Marker added for Unnamed Place.';
-                        };
-
-                        // Handle cancel button click
-                        document.getElementById('cancel').onclick = function() {
-                            messageBox.innerHTML = 'Marker placement canceled.';
-                        };
-                    }
+                    // Display NASA data
+                    nasaDataBox.innerHTML = `
+                        <h3>NASA Earth Data for Selected Location</h3>
+                        <p><strong>Precipitation:</strong> ${precipitation.toFixed(2)} mm/day</p>
+                        <p><strong>Temperature:</strong> ${temperature.toFixed(1)}°C</p>
+                        <p><strong>Relative Humidity:</strong> ${humidity.toFixed(1)}%</p>
+                        <p><strong>Soil Moisture:</strong> ${soilMoisture.toFixed(1)}%</p>
+                        <p><strong>Estimated Evapotranspiration:</strong> ${evapotranspiration.toFixed(2)} mm/day</p>
+                        <h4>Irrigation Guide:</h4>
+                        ${getIrrigationGuide(precipitation, soilMoisture, evapotranspiration)}
+                    `;
                 })
                 .catch(error => {
-                    console.error('Error fetching state name:', error);
-                    messageBox.innerHTML = `
-                        <span>Could not retrieve state information. Place unavailable.</span>
-                        <button class="button" id="cancel">Cancel</button>
-                    `;
-
-                    // Handle cancel button click on error
-                    document.getElementById('cancel').onclick = function() {
-                        messageBox.innerHTML = 'Marker placement canceled.';
-                    };
+                    console.error('Error fetching NASA data:', error);
+                    nasaDataBox.innerHTML = '<p>Error fetching NASA data. Please try again later.</p>';
                 });
         }
 
-        // Listen for click events on the map
-        map.on('click', onMapClick);
+        function calculateEvapotranspiration(temperature, humidity, windSpeed, solarRadiation) {
+            // Simplified Penman-Monteith equation
+            const latentHeatVaporization = 2.45; // MJ/kg
+            const psychrometricConstant = 0.067; // kPa/°C
+            const saturationVaporPressure = 0.6108 * Math.exp((17.27 * temperature) / (temperature + 237.3));
+            const actualVaporPressure = saturationVaporPressure * (humidity / 100);
+            const vaporPressureDeficit = saturationVaporPressure - actualVaporPressure;
+            
+            const netRadiation = 0.77 * solarRadiation - 40; // Simplified net radiation calculation
+            
+            const numerator = 0.408 * netRadiation + psychrometricConstant * (900 / (temperature + 273)) * windSpeed * vaporPressureDeficit;
+            const denominator = 1 + psychrometricConstant * (1 + 0.34 * windSpeed);
+            
+            return numerator / denominator;
+        }
 
-        // Geolocation
-        map.locate({ setView: true, maxZoom: 16 });
+        function getIrrigationGuide(precipitation, soilMoisture, evapotranspiration) {
+            let guide = "<p>";
+            
+            if (precipitation < 1 && soilMoisture < 30) {
+                guide += "Immediate irrigation recommended. Soil moisture is critically low (${soilMoisture.toFixed(1)}%) and there's little recent precipitation (${precipitation.toFixed(2)} mm/day). ";
+                guide += `Consider applying 20-30 mm of water immediately, followed by 10-15 mm every 2-3 days until soil moisture improves. Monitor closely as evapotranspiration is ${evapotranspiration.toFixed(2)} mm/day.</p>`;
+            } else if (precipitation < 3 && soilMoisture < 50) {
+                guide += `Consider irrigation in the next few days if no rain is forecasted. Current soil moisture (${soilMoisture.toFixed(1)}%) is below optimal levels. `;
+                guide += `With evapotranspiration at ${evapotranspiration.toFixed(2)} mm/day, plan to apply 15-20 mm of water every 3-4 days to maintain adequate soil moisture.</p>`;
+            } else {
+                guide += `Irrigation may not be necessary at this time. Soil moisture (${soilMoisture.toFixed(1)}%) is adequate, and recent precipitation (${precipitation.toFixed(2)} mm/day) has been sufficient. `;
+                guide += `However, with evapotranspiration at ${evapotranspiration.toFixed(2)} mm/day, continue to monitor conditions closely. Consider light irrigation of 5-10 mm if no rainfall occurs in the next 5-7 days.</p>`;
+            }
+            
+            guide += "<p>Remember to adjust these recommendations based on specific crop needs, growth stage, and local weather forecasts. Early morning irrigation is generally most effective to minimize water loss through evaporation.</p>";
+            
+            return guide;
+        }
+
+        function onLocationSelect(latlng, placeName) {
+            if (currentMarker) {
+                map.removeLayer(currentMarker);
+            }
+
+            currentMarker = L.marker(latlng).addTo(map)
+                .bindPopup(placeName)
+                .openPopup();
+
+            messageBox.innerHTML = `<strong>Location selected:</strong> ${placeName}`;
+            fetchNASAData(latlng.lat, latlng.lng);
+        }
+
         map.on('locationfound', function(e) {
-            L.marker(e.latlng).addTo(map);
+            onLocationSelect(e.latlng, "Your Current Location");
         });
     </script>
 </body>
