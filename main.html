@@ -304,6 +304,14 @@
                                 <strong>Climate Type</strong>
                                 ${climateType}
                             </div>
+                            <div class="data-item">
+                                <strong>Solar Radiation</strong>
+                                ${solarRadiation.toFixed(2)} kWh/m²/day
+                            </div>
+                            <div class="data-item">
+                                <strong>Wind Speed</strong>
+                                ${windSpeed.toFixed(2)} m/s
+                            </div>
                         </div>
                         <h4>Irrigation Guide</h4>
                         ${getIrrigationGuide(precipitation, soilMoisture, evapotranspiration)}
@@ -398,26 +406,38 @@
         }
 
         function getClimateType(temperature, precipitation) {
-            if (temperature > 18 && precipitation > 1500) {
-                return "Tropical";
-            } else if (temperature > 18 && precipitation > 500 && precipitation <= 1500) {
-                return "Subtropical";
-            } else if (temperature > 10 && temperature <= 18 && precipitation > 500) {
-                return "Temperate";
-            } else if (temperature > 18 && precipitation < 250) {
-                return "Arid";
-            } else if (temperature > 15 && temperature <= 18 && precipitation > 400 && precipitation <= 700) {
-                return "Mediterranean";
-            } else if (temperature <= 10 && precipitation > 300) {
-                return "Cool Temperate";
-            } else if (temperature > 18 && temperature <= 25 && precipitation > 500 && precipitation <= 1000) {
-                return "Warm Temperate";
-            } else if (temperature > 18 && precipitation > 1000) {
-                return "Humid Subtropical";
-            } else {
-                return "Mixed/Other";
-            }
+    if (temperature > 18 && precipitation > 1500) {
+        return "Tropical Rainforest";
+    } else if (temperature > 18 && precipitation > 750 && precipitation <= 1500) {
+        return "Tropical Savanna";
+    } else if (temperature > 18 && precipitation > 500 && precipitation <= 750) {
+        return "Tropical Monsoon";
+    } else if (temperature > 10 && temperature <= 18 && precipitation > 500) {
+        return "Temperate";
+    } else if (temperature > 18 && precipitation < 250) {
+        // Update logic to exclude tropical regions like Rio from being classified as arid
+        if (precipitation >= 1000) {
+            return "Tropical Rainforest";
+        } else if (precipitation >= 750) {
+            return "Tropical Savanna";
+        } else if (precipitation >= 500) {
+            return "Tropical Monsoon";
         }
+        return "Arid";
+    } else if (temperature > 18 && precipitation >= 250 && precipitation < 500) {
+        return "Semi-Arid";
+    } else if (temperature > 15 && temperature <= 18 && precipitation > 400 && precipitation <= 700) {
+        return "Mediterranean";
+    } else if (temperature <= 10 && precipitation > 300) {
+        return "Cool Temperate";
+    } else if (temperature > 18 && temperature <= 25 && precipitation > 500 && precipitation <= 1000) {
+        return "Warm Temperate";
+    } else if (temperature > 18 && precipitation > 1000 && precipitation <= 1500) {
+        return "Humid Subtropical";
+    } else {
+        return "Mixed/Other";
+    }
+}
 
         function onLocationSelect(latlng, placeName) {
             if (currentMarker) {
