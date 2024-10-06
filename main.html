@@ -14,6 +14,11 @@
             padding: 20px;
             background-color: #f0f5f9;
             color: #333;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.dark-theme {
+            background-color: #1a202c;
+            color: #e2e8f0;
         }
         .container {
             max-width: 1200px;
@@ -25,6 +30,9 @@
             margin-bottom: 20px;
             font-size: 2.5em;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .dark-theme h1 {
+            color: #63b3ed;
         }
         #map {
             height: 500px;
@@ -40,12 +48,19 @@
             background-color: #e2e8f0;
             border-radius: 5px;
         }
+        .dark-theme #messageBox {
+            background-color: #2d3748;
+            color: #e2e8f0;
+        }
         #nasaData {
             margin-top: 30px;
             padding: 20px;
             background-color: #ffffff;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .dark-theme #nasaData {
+            background-color: #2d3748;
         }
         .leaflet-control-geocoder {
             top: 10px;
@@ -55,9 +70,15 @@
             color: #2c5282;
             margin-top: 20px;
         }
+        .dark-theme h3, .dark-theme h4 {
+            color: #63b3ed;
+        }
         p {
             color: #4a5568;
             line-height: 1.6;
+        }
+        .dark-theme p {
+            color: #e2e8f0;
         }
         .custom-button {
             background-color: #4a5568;
@@ -82,6 +103,9 @@
             background-color: #f7fafc;
             border-radius: 3px;
         }
+        .dark-theme li {
+            background-color: #4a5568;
+        }
         .data-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -94,10 +118,33 @@
             border-radius: 5px;
             text-align: center;
         }
+        .dark-theme .data-item {
+            background-color: #4a5568;
+        }
         .data-item strong {
             display: block;
             margin-bottom: 5px;
             color: #2c5282;
+        }
+        .dark-theme .data-item strong {
+            color: #63b3ed;
+        }
+        #theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background-color: #4a5568;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+        #theme-toggle:hover {
+            background-color: #2d3748;
         }
     </style>
 </head>
@@ -109,6 +156,8 @@
         <div id="nasaData"></div>
     </div>
     
+    <button id="theme-toggle">Toggle Dark Theme</button>
+
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
     <script>
@@ -344,6 +393,15 @@
 
         map.on('locationfound', function(e) {
             onLocationSelect(e.latlng, "Your Current Location");
+        });
+
+        // Dark theme toggle functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-theme');
+            themeToggle.textContent = body.classList.contains('dark-theme') ? 'Toggle Light Theme' : 'Toggle Dark Theme';
         });
     </script>
 </body>
