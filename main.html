@@ -325,7 +325,7 @@
             };
 
             let selectedCrops = [];
-
+            // wtf is this spaghetti code? pls use switch statements lmao
             if (temperature > 25 && precipitation > 1500 && soilMoisture > 60) {
                 selectedCrops = cropList.tropical;
             } else if (temperature > 20 && temperature <= 25 && precipitation > 800 && soilMoisture > 50) {
